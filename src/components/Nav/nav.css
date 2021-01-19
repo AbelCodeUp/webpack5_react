@@ -1,0 +1,28 @@
+.nav-item {
+    display: flex;
+    align-items: stretch;
+    height: 100px;
+    width: 100%;
+    & .logo {
+        width: 200px;
+    }
+    & .nav-list {
+        flex: 1;
+        align-items: center;
+        flex-direction: row;
+        overflow: hidden;
+        display: flex;
+        & li {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding:0 15px;
+            & a.active{
+                color: coral;
+            }
+        }
+    }
+    & a {
+        color: #fff;
+    }
+}
