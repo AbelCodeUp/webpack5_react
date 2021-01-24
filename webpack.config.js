@@ -7,11 +7,15 @@ const argv = require("yargs-parser")(process.argv.slice(2));
 const _mode = argv.mode || "development";
 const _mergeConfig = require(`./config/webpack.${_mode}.js`);
 const webpack = require('webpack');
+const WebpackBar = require('webpackbar');
 // const _modeflag = _mode == "production" ? true : false;
 
 let webpackBaseConfig = {
+    cache: {
+        type: 'filesystem'
+    },
     entry: {
-        app: resolve('./src/index.tsx')
+        app: resolve('src/index.tsx')
     },
     output: {
         filename: '[name].[contenthash:5].js',
@@ -27,10 +31,27 @@ let webpackBaseConfig = {
             },
             {
                 test: /\.(js|jsx|ts|tsx)$/,
-                include: [resolve("src")],
-                exclude: /node_modules/,
-                loader: "babel-loader"
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: "swc-loader",
+                    options: {
+                        // This makes swc-loader invoke swc synchronously.
+                        sync: true,
+                        jsc: {
+                            parser: {
+                                syntax: "typescript",
+                                jsx: true
+                            }
+                        }
+                    }
+                }
             },
+            // {
+            //     test: /\.(js|jsx|ts|tsx)$/,
+            //     include: [resolve("src")],
+            //     exclude: /node_modules/,
+            //     loader: "babel-loader"
+            // },
             {
                 test: /\.css$/,
                 use: [
@@ -70,7 +91,8 @@ let webpackBaseConfig = {
         new MiniCssExtractPlugin({
             filename: "styles/[name].[contenthash:5].css",
             chunkFilename: "styles/[name].[contenthash:5].css"
-        })
+        }),
+        new WebpackBar()
     ],
 
 };
